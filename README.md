@@ -1,2 +1,2 @@
 # python-tradinglib
-Python library that connects with multiple CryptoCurrency Exchanges
+Python wrapper that connects with multiple cryptocurrency exchange APIs
