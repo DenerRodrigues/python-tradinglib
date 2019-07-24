@@ -5,7 +5,7 @@ from decimal import Decimal
 from bittrex.bittrex import API_V2_0, Bittrex as Client
 
 
-class Bittrex:
+class BittrexAPI:
     def __init__(self, currency_price='USDT', currency_quantity='BTC', api_key=None, api_secret=None):
         self.market = currency_price + '-' + currency_quantity
         self.currency_price = currency_price

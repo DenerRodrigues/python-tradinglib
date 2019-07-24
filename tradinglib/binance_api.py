@@ -5,7 +5,7 @@ from decimal import Decimal
 from binance.client import Client
 
 
-class Binance:
+class BinanceAPI:
     def __init__(self, currency_price='USDT', currency_quantity='BTC', api_key=None, api_secret=None):
         self.market = currency_quantity + currency_price
         self.currency_price = currency_price

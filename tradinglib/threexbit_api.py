@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from decimal import Decimal
-from random import uniform
-from datetime import datetime
 
 from txb_api.client import Client
 from txb_api.public import Public
 
 
-class ThreeXBit:
+class ThreeXBitAPI:
     def __init__(self, currency_price='CREDIT', currency_quantity='BTC', api_key=None, api_secret=None):
         self.market = currency_price + '_' + currency_quantity
         self.currency_price = currency_price
