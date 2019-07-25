@@ -18,11 +18,19 @@ class BittrexAPI:
         except:
             return self._get_client(api_key, api_secret)
 
-    def list_orderbook(self, only_prices=False, limit=10):
+    def list_orderbook(self, limit=10):
         book = self._client.get_orderbook(market=self.market).get('result')
+
         book_buy_orders = book.get('buy')[:limit]
+        book_buy_orders = [{
+            'unit_price': Decimal(str(order.get('Rate'))),
+            'quantity': Decimal(str(order.get('Quantity'))),
+        } for order in book_buy_orders]
+
         book_sell_orders = book.get('sell')[:limit]
-        if only_prices:
-            book_buy_orders = [Decimal(str(order.get('Rate'))) for order in book_buy_orders]
-            book_sell_orders = [Decimal(str(order.get('Rate'))) for order in book_sell_orders]
+        book_sell_orders = [{
+            'unit_price': Decimal(str(order.get('Rate'))),
+            'quantity': Decimal(str(order.get('Quantity'))),
+        } for order in book_sell_orders]
+
         return book_buy_orders, book_sell_orders

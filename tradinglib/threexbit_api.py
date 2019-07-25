@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from decimal import Decimal
-
 from txb_api.client import Client
 from txb_api.public import Public
 
@@ -20,11 +18,8 @@ class ThreeXBitAPI:
         except:
             return self._get_client(client_id, client_secret)
 
-    def list_orderbook(self, only_prices=False, limit=10):
+    def list_orderbook(self, limit=10):
         book = self._public.orderbook(self.currency_price, self.currency_quantity)
         book_buy_orders = book.get('buy_orders')[:limit]
         book_sell_orders = book.get('sell_orders')[:limit]
-        if only_prices:
-            book_buy_orders = [Decimal(order.get('unit_price')) for order in book_buy_orders]
-            book_sell_orders = [Decimal(order.get('unit_price')) for order in book_sell_orders]
         return book_buy_orders, book_sell_orders

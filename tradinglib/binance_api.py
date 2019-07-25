@@ -18,11 +18,19 @@ class BinanceAPI:
         except:
             return self._get_client(api_key, api_secret)
 
-    def list_orderbook(self, only_prices=False, limit=10):
+    def list_orderbook(self, limit=10):
         book = self._client.get_order_book(symbol=self.market)
+
         book_buy_orders = book.get('bids')[:limit]
+        book_buy_orders = [{
+            'unit_price': Decimal(str(order[0])),
+            'quantity': Decimal(str(order[1])),
+        } for order in book_buy_orders]
+
         book_sell_orders = book.get('asks')[:limit]
-        if only_prices:
-            book_buy_orders = [Decimal(str(order[0])) for order in book_buy_orders]
-            book_sell_orders = [Decimal(str(order[0])) for order in book_sell_orders]
+        book_sell_orders = [{
+            'unit_price': Decimal(str(order[0])),
+            'quantity': Decimal(str(order[1])),
+        } for order in book_sell_orders]
+
         return book_buy_orders, book_sell_orders
