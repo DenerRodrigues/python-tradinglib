@@ -2,10 +2,12 @@
 
 from decimal import Decimal
 
-from bittrex.bittrex import API_V2_0, Bittrex as Client
+from bittrex.bittrex import API_V1_1, Bittrex as Client
+
+from .base_api import BaseAPI
 
 
-class BittrexAPI:
+class BittrexAPI(BaseAPI):
     def __init__(self, currency_price='USDT', currency_quantity='BTC', api_key=None, api_secret=None):
         self.market = currency_price + '-' + currency_quantity
         self.currency_price = currency_price
@@ -14,9 +16,29 @@ class BittrexAPI:
 
     def _get_client(self, api_key, api_secret):
         try:
-            return Client(api_key=api_key, api_secret=api_secret, api_version=API_V2_0)
+            return Client(api_key=api_key, api_secret=api_secret, api_version=API_V1_1)
         except:
             return self._get_client(api_key, api_secret)
+
+    def get_balance(self, currency=None):
+        if currency:
+            balance = self._client.get_balance(currency).get('result')
+            return self.build_balance(
+                currency=balance.get('Currency'),
+                available=balance.get('Available'),
+                pending=balance.get('Pending'),
+                total=balance.get('Balance')
+            )
+        balances = [
+            self.build_balance(
+                currency=balance.get('Currency'),
+                available=balance.get('Available'),
+                pending=balance.get('Pending'),
+                total=balance.get('Balance')
+            )
+            for balance in self._client.get_balances().get('result')
+        ]
+        return balances
 
     def list_orderbook(self, limit=10):
         book = self._client.get_orderbook(market=self.market).get('result')
