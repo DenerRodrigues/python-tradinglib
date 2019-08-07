@@ -8,10 +8,7 @@ from .base_api import BaseAPI
 
 
 class BinanceAPI(BaseAPI):
-    def __init__(self, currency_price='USDT', currency_quantity='BTC', api_key=None, api_secret=None):
-        self.market = currency_quantity + currency_price
-        self.currency_price = currency_price
-        self.currency_quantity = currency_quantity
+    def __init__(self, api_key=None, api_secret=None):
         self._client = self._get_client(api_key, api_secret)
         self.recv_window = 1000
 
@@ -39,8 +36,9 @@ class BinanceAPI(BaseAPI):
         ]
         return balances
 
-    def list_orderbook(self, limit=10):
-        book = self._client.get_order_book(symbol=self.market)
+    def list_orderbook(self, currency_price='USDT', currency_quantity='BTC', limit=10):
+        market = currency_quantity + currency_price
+        book = self._client.get_order_book(symbol=market)
 
         book_buy_orders = book.get('bids')[:limit]
         book_buy_orders = [{
