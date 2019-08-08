@@ -67,14 +67,14 @@ class BittrexAPI(BaseAPI):
                 order = self._client.sell_limit(market, quantity, unit_price)
         return order
 
-    def create_withdraw(self, currency: str, quantity: Decimal, address: str, uid: str = None) -> dict:
+    def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
         options = {
             'currency': currency,
             'quantity': quantity,
             'address': address,
         }
-        if uid:
-            options['paymentid'] = uid
+        if tag:
+            options['paymentid'] = tag
 
         withdraw = self._client._api_query(PROTECTION_PRV, {API_V1_1: '/account/withdraw'}, options)
         return withdraw
