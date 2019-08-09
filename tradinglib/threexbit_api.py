@@ -15,8 +15,8 @@ class ThreeXBitAPI:
         except:
             return self._get_client(client_id, client_secret)
 
-    def list_orderbook(self, currency_price='CREDIT', currency_quantity='BTC', limit=10):
+    def list_orderbook(self, currency_price: str ='CREDIT', currency_quantity: str = 'BTC', limit: int = 10):
         book = self._public.orderbook(currency_price, currency_quantity)
-        book_buy_orders = book.get('buy_orders')[:limit]
-        book_sell_orders = book.get('sell_orders')[:limit]
-        return book_buy_orders, book_sell_orders
+        buy_orders = book.get('buy_orders')[:limit]
+        sell_orders = book.get('sell_orders')[:limit]
+        return buy_orders, sell_orders

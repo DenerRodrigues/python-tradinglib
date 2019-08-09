@@ -10,7 +10,23 @@ class BaseAPI:
     ORDER_MARKET = 'MARKET'
 
     @staticmethod
-    def build_balance(currency=None, available=None, pending=None, total=None):
+    def format_decimal(value: Decimal, decimal_places: int = 8) -> Decimal:
+        exp = Decimal(str('{0:.%sf}' % decimal_places).format(0))
+        return value.quantize(exp, rounding=ROUND_DOWN)
+
+    def calc_order(self, unit_price: Decimal, quantity: Decimal = None,
+                   total: Decimal = None) -> (Decimal, Decimal, Decimal):
+        if quantity:
+            total = Decimal(str(unit_price)) * Decimal(str(quantity))
+        else:
+            quantity = Decimal(str(total)) / Decimal(str(unit_price))
+        unit_price = self.format_decimal(unit_price)
+        quantity = self.format_decimal(quantity)
+        total = self.format_decimal(total)
+        return unit_price, quantity, total
+
+    @staticmethod
+    def build_balance(currency, available, pending, total=None):
         if not total:
             total = Decimal(str(available)) + Decimal(str(pending))
         return {
@@ -20,17 +36,11 @@ class BaseAPI:
             'total': Decimal(str(total)),
         }
 
-    @staticmethod
-    def format_decimal(value: Decimal, decimal_places: int = 8) -> Decimal:
-        exp = Decimal(str('{0:.%sf}' % decimal_places).format(0))
-        return value.quantize(exp, rounding=ROUND_DOWN)
-
-    def calc_order(self, unit_price: Decimal, quantity: Decimal = None, total: Decimal = None) -> (Decimal, Decimal, Decimal):
-        if quantity:
-            total = Decimal(str(unit_price)) * Decimal(str(quantity))
-        else:
-            quantity = Decimal(str(total)) / Decimal(str(unit_price))
-        unit_price = self.format_decimal(unit_price)
-        quantity = self.format_decimal(quantity)
-        total = self.format_decimal(total)
-        return unit_price, quantity, total
+    def build_orderbook(self, unit_price, quantity, total=None):
+        if not total:
+            total = self.format_decimal(Decimal(str(unit_price)) * Decimal(str(quantity)))
+        return {
+            'unit_price': Decimal(str(unit_price)),
+            'quantity': Decimal(str(quantity)),
+            'total': Decimal(str(total)),
+        }

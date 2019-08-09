@@ -37,23 +37,17 @@ class BittrexAPI(BaseAPI):
         ]
         return balances
 
-    def list_orderbook(self, currency_price='USDT', currency_quantity='BTC', limit=10):
+    def list_orderbook(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC', limit: int = 10):
         market = currency_price + '-' + currency_quantity
         book = self._client.get_orderbook(market=market).get('result')
 
-        book_buy_orders = book.get('buy')[:limit]
-        book_buy_orders = [{
-            'unit_price': Decimal(str(order.get('Rate'))),
-            'quantity': Decimal(str(order.get('Quantity'))),
-        } for order in book_buy_orders]
+        buy_orders = book.get('buy')[:limit]
+        buy_orders = [self.build_orderbook(order.get('Rate'), order.get('Quantity')) for order in buy_orders]
 
-        book_sell_orders = book.get('sell')[:limit]
-        book_sell_orders = [{
-            'unit_price': Decimal(str(order.get('Rate'))),
-            'quantity': Decimal(str(order.get('Quantity'))),
-        } for order in book_sell_orders]
+        sell_orders = book.get('sell')[:limit]
+        sell_orders = [self.build_orderbook(order.get('Rate'), order.get('Quantity')) for order in sell_orders]
 
-        return book_buy_orders, book_sell_orders
+        return buy_orders, sell_orders
 
     def create_order(self, order_type: str, currency_price: str, currency_quantity: str,
                      unit_price: Decimal = None, quantity: Decimal = None,

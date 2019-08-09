@@ -36,23 +36,17 @@ class BinanceAPI(BaseAPI):
         ]
         return balances
 
-    def list_orderbook(self, currency_price='USDT', currency_quantity='BTC', limit=10):
+    def list_orderbook(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC', limit: int = 10):
         symbol = currency_quantity + currency_price
         book = self._client.get_order_book(symbol=symbol)
 
-        book_buy_orders = book.get('bids')[:limit]
-        book_buy_orders = [{
-            'unit_price': Decimal(str(order[0])),
-            'quantity': Decimal(str(order[1])),
-        } for order in book_buy_orders]
+        buy_orders = book.get('bids')[:limit]
+        buy_orders = [self.build_orderbook(order[0], order[1]) for order in buy_orders]
 
-        book_sell_orders = book.get('asks')[:limit]
-        book_sell_orders = [{
-            'unit_price': Decimal(str(order[0])),
-            'quantity': Decimal(str(order[1])),
-        } for order in book_sell_orders]
+        sell_orders = book.get('asks')[:limit]
+        sell_orders = [self.build_orderbook(order[0], order[1]) for order in sell_orders]
 
-        return book_buy_orders, book_sell_orders
+        return buy_orders, sell_orders
 
     def create_order(self, order_type: str, currency_price: str, currency_quantity: str,
                      unit_price: Decimal = None, quantity: Decimal = None,
