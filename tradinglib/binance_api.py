@@ -12,13 +12,11 @@ class BinanceAPI(BaseAPI):
         self._client = self._get_client(api_key, api_secret)
         self.recv_window = 1000
 
-    def _get_client(self, api_key, api_secret):
-        try:
-            return Client(api_key=api_key, api_secret=api_secret)
-        except:
-            return self._get_client(api_key, api_secret)
+    @staticmethod
+    def _get_client(api_key, api_secret):
+        return Client(api_key=api_key, api_secret=api_secret)
 
-    def get_balance(self, currency=None):
+    def get_balance(self, currency: str = None):
         if currency:
             balance = self._client.get_asset_balance(currency, **{'recvWindow': self.recv_window})
             return self.build_balance(
@@ -30,11 +28,24 @@ class BinanceAPI(BaseAPI):
             self.build_balance(
                 currency=balance.get('asset'),
                 available=balance.get('free'),
-                pending=balance.get('locked'),
+                pending=balance.get('locked')
             )
             for balance in self._client.get_account(**{'recvWindow': self.recv_window}).get('balances')
         ]
         return balances
+
+    def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
+        params = {
+            'asset': currency,
+            'amount': quantity,
+            'address': address,
+            'recvWindow': self.recv_window,
+        }
+        if tag:
+            params['addressTag'] = tag
+
+        withdraw = self._client.withdraw(**params)
+        return withdraw
 
     def list_orderbook(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC', limit: int = 10):
         symbol = currency_quantity + currency_price
@@ -67,15 +78,31 @@ class BinanceAPI(BaseAPI):
                 order = self._client.order_limit_sell(**params)
         return order
 
-    def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
+    def get_open_orders(self, currency_price: str = None, currency_quantity: str = None):
         params = {
-            'asset': currency,
-            'amount': quantity,
-            'address': address,
             'recvWindow': self.recv_window,
         }
-        if tag:
-            params['addressTag'] = tag
+        if currency_price and currency_quantity:
+            symbol = currency_quantity + currency_price
+            params['symbol'] = symbol
+        orders = self._client.get_open_orders(**params)
+        return orders
 
-        withdraw = self._client.withdraw(**params)
-        return withdraw
+    def get_order_history(self, currency_price: str, currency_quantity: str):
+        symbol = currency_quantity + currency_price
+        params = {
+            'symbol': symbol,
+            'recvWindow': self.recv_window,
+        }
+        orders = self._client.get_all_orders(**params)
+        return orders
+
+    def get_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
+        symbol = currency_quantity + currency_price
+        params = {
+            'symbol': symbol,
+            'orderId': order_id,
+            'recvWindow': self.recv_window,
+        }
+        order = self._client.get_order(**params)
+        return order

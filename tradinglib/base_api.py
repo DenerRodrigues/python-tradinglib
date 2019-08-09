@@ -44,3 +44,26 @@ class BaseAPI:
             'quantity': Decimal(str(quantity)),
             'total': Decimal(str(total)),
         }
+
+    def get_balance(self, currency: str = None):
+        raise NotImplementedError
+
+    def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
+        raise NotImplementedError
+
+    def list_orderbook(self, currency_price: str, currency_quantity: str, limit: int = 10):
+        raise NotImplementedError
+
+    def create_order(self, order_type: str, currency_price: str, currency_quantity: str,
+                     unit_price: Decimal = None, quantity: Decimal = None,
+                     execution_type: str = ORDER_LIMIT) -> dict:
+        raise NotImplementedError
+
+    def get_open_orders(self, currency_price: str = None, currency_quantity: str = None):
+        raise NotImplementedError
+
+    def get_order_history(self, currency_price: str, currency_quantity: str):
+        raise NotImplementedError
+
+    def get_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
+        raise NotImplementedError
