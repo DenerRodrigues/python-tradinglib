@@ -49,7 +49,7 @@ class BittrexAPI(BaseAPI):
 
     def get_orderbook_ticker(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC'):
         market = currency_price + '-' + currency_quantity
-        ticker = self._client.get_ticker(market)
+        ticker = self._client.get_ticker(market).get('result')
         return self.build_orderbook_ticker(ticker.get('Bid'), ticker.get('Ask'))
 
     def list_orderbook(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC', limit: int = 10):
