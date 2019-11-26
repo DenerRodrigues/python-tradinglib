@@ -36,6 +36,13 @@ class BaseAPI:
             'total': Decimal(str(total)),
         }
 
+    @staticmethod
+    def build_orderbook_ticker(bid_price, ask_price):
+        return {
+            'bid': Decimal(str(bid_price)),
+            'ask': Decimal(str(ask_price)),
+        }
+
     def build_orderbook(self, unit_price, quantity, total=None):
         if not total:
             total = self.format_decimal(Decimal(str(unit_price)) * Decimal(str(quantity)))

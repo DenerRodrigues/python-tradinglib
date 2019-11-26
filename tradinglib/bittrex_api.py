@@ -47,6 +47,11 @@ class BittrexAPI(BaseAPI):
         payload = self._client._api_query(PROTECTION_PRV, {API_V1_1: '/account/withdraw'}, options)
         return payload.get('result')
 
+    def get_orderbook_ticker(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC'):
+        market = currency_price + '-' + currency_quantity
+        ticker = self._client.get_ticker(market)
+        return self.build_orderbook_ticker(ticker.get('Bid'), ticker.get('Ask'))
+
     def list_orderbook(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC', limit: int = 10):
         market = currency_price + '-' + currency_quantity
         book = self._client.get_orderbook(market=market).get('result')

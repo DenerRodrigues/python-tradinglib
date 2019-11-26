@@ -47,6 +47,11 @@ class BinanceAPI(BaseAPI):
         withdraw = self._client.withdraw(**params)
         return withdraw
 
+    def get_orderbook_ticker(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC'):
+        symbol = currency_quantity + currency_price
+        ticker = self._client.get_orderbook_ticker(symbol=symbol)
+        return self.build_orderbook_ticker(ticker.get('bidPrice'), ticker.get('askPrice'))
+
     def list_orderbook(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC', limit: int = 10):
         symbol = currency_quantity + currency_price
         book = self._client.get_order_book(symbol=symbol)
