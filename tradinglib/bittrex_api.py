@@ -49,7 +49,7 @@ class BittrexAPI(BaseAPI):
 
     def get_ticker(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC'):
         market = currency_price + '-' + currency_quantity
-        ticker = self._client.get_ticker(market).get('result')
+        ticker = self._client.get_market_summary(market).get('result')
         return self.build_ticker(
             ticker.get('Last'),
             ticker.get('High'),
