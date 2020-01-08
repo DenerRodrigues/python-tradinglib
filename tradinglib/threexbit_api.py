@@ -27,7 +27,7 @@ class ThreeXBitAPI(BaseAPI):
     def get_orderbook_ticker(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC'):
         market = currency_price + '_' + currency_quantity
         ticker = self._public.ticker()
-        ticker.get(market)
+        ticker = ticker.get(market)
         return self.build_orderbook_ticker(ticker.get('bid'), ticker.get('ask'))
 
     def list_orderbook(self, currency_price: str = 'CREDIT', currency_quantity: str = 'BTC', limit: int = 10):
