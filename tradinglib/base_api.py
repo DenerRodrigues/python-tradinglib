@@ -37,10 +37,14 @@ class BaseAPI:
         }
 
     @staticmethod
-    def build_orderbook_ticker(bid_price, ask_price):
+    def build_ticker(last_price, high_price, low_price, bid_price, ask_price, variation):
         return {
+            'last': Decimal(str(last_price)),
+            'high': Decimal(str(high_price)),
+            'low': Decimal(str(low_price)),
             'bid': Decimal(str(bid_price)),
             'ask': Decimal(str(ask_price)),
+            'variation': Decimal(str(variation)),
         }
 
     def build_orderbook(self, unit_price, quantity, total=None):
@@ -51,6 +55,9 @@ class BaseAPI:
             'quantity': Decimal(str(quantity)),
             'total': Decimal(str(total)),
         }
+
+    def get_ticker(self, currency_price: str, currency_quantity: str):
+        raise NotImplementedError
 
     def get_balance(self, currency: str = None):
         raise NotImplementedError

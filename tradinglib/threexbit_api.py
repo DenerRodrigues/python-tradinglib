@@ -24,11 +24,18 @@ class ThreeXBitAPI(BaseAPI):
     def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
         raise NotImplemented
 
-    def get_orderbook_ticker(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC'):
+    def get_ticker(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC'):
         market = currency_price + '_' + currency_quantity
         ticker = self._public.ticker()
         ticker = ticker.get(market)
-        return self.build_orderbook_ticker(ticker.get('bid'), ticker.get('ask'))
+        return self.build_ticker(
+            ticker.get('last'),
+            ticker.get('max'),
+            ticker.get('min'),
+            ticker.get('bid'),
+            ticker.get('ask'),
+            ticker.get('variation'),
+        )
 
     def list_orderbook(self, currency_price: str = 'CREDIT', currency_quantity: str = 'BTC', limit: int = 10):
         book = self._public.orderbook(currency_price, currency_quantity)
