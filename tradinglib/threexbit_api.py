@@ -20,7 +20,7 @@ class ThreeXBitAPI(BaseAPI):
 
     def get_balance(self, currency: str = None):
         if currency:
-            balance = self._client.balance(currency).get('result')
+            balance = self._client.balance(currency)
             return self.build_balance(
                 currency=currency,
                 available=balance.get('available_balance'),
@@ -34,7 +34,7 @@ class ThreeXBitAPI(BaseAPI):
                 locked=balance.get('blocked_balance'),
                 total=balance.get('total_balance')
             )
-            for balance in self._client.balance().get('result')
+            for balance in self._client.balance()
         ]
         return balances
 
