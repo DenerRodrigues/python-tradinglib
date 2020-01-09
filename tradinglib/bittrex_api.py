@@ -19,16 +19,16 @@ class BittrexAPI(BaseAPI):
         if currency:
             balance = self._client.get_balance(currency).get('result')
             return self.build_balance(
-                currency=balance.get('Currency'),
+                currency=currency,
                 available=balance.get('Available'),
-                pending=balance.get('Pending'),
+                locked=balance.get('Pending'),
                 total=balance.get('Balance')
             )
         balances = [
             self.build_balance(
-                currency=balance.get('Currency'),
+                currency=currency,
                 available=balance.get('Available'),
-                pending=balance.get('Pending'),
+                locked=balance.get('Pending'),
                 total=balance.get('Balance')
             )
             for balance in self._client.get_balances().get('result')

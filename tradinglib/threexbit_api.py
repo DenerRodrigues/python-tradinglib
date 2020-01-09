@@ -19,7 +19,24 @@ class ThreeXBitAPI(BaseAPI):
             return self._get_client(client_id, client_secret)
 
     def get_balance(self, currency: str = None):
-        return self._client.balance(currency)
+        if currency:
+            balance = self._client.balance(currency).get('result')
+            return self.build_balance(
+                currency=currency,
+                available=balance.get('available_balance'),
+                locked=balance.get('blocked_balance'),
+                total=balance.get('total_balance')
+            )
+        balances = [
+            self.build_balance(
+                currency=currency,
+                available=balance.get('available_balance'),
+                locked=balance.get('blocked_balance'),
+                total=balance.get('total_balance')
+            )
+            for balance in self._client.balance().get('result')
+        ]
+        return balances
 
     def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
         raise NotImplemented

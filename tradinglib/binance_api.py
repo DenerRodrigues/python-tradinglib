@@ -20,15 +20,15 @@ class BinanceAPI(BaseAPI):
         if currency:
             balance = self._client.get_asset_balance(currency, **{'recvWindow': self.recv_window})
             return self.build_balance(
-                currency=balance.get('asset'),
+                currency=currency,
                 available=balance.get('free'),
-                pending=balance.get('locked')
+                locked=balance.get('locked')
             )
         balances = [
             self.build_balance(
-                currency=balance.get('asset'),
+                currency=currency,
                 available=balance.get('free'),
-                pending=balance.get('locked')
+                locked=balance.get('locked')
             )
             for balance in self._client.get_account(**{'recvWindow': self.recv_window}).get('balances')
         ]

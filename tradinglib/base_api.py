@@ -26,13 +26,13 @@ class BaseAPI:
         return unit_price, quantity, total
 
     @staticmethod
-    def build_balance(currency, available, pending, total=None):
+    def build_balance(currency, available, locked, total=None):
         if not total:
-            total = Decimal(str(available)) + Decimal(str(pending))
+            total = Decimal(str(available)) + Decimal(str(locked))
         return {
             'currency': currency,
             'available': Decimal(str(available)),
-            'pending': Decimal(str(pending)),
+            'locked': Decimal(str(locked)),
             'total': Decimal(str(total)),
         }
 
