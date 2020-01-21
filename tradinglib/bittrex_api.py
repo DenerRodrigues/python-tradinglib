@@ -26,7 +26,7 @@ class BittrexAPI(BaseAPI):
             )
         balances = [
             self.build_balance(
-                currency=currency,
+                currency=balance.get('Currency').upper(),
                 available=balance.get('Available'),
                 locked=balance.get('Pending'),
                 total=balance.get('Balance')

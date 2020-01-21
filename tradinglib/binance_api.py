@@ -26,7 +26,7 @@ class BinanceAPI(BaseAPI):
             )
         balances = [
             self.build_balance(
-                currency=currency,
+                currency=balance.get('asset').upper(),
                 available=balance.get('free'),
                 locked=balance.get('locked')
             )
