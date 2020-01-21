@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from decimal import Decimal
+
 from bittrex.bittrex import API_V1_1, PROTECTION_PRV, Bittrex as Client
 
 from .base_api import BaseAPI
@@ -33,7 +35,7 @@ class BittrexAPI(BaseAPI):
         ]
         return balances
 
-    def create_withdraw(self, currency: str, quantity: float, address: str, tag: str = None) -> dict:
+    def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
         options = {
             'currency': currency,
             'quantity': quantity,
@@ -70,15 +72,15 @@ class BittrexAPI(BaseAPI):
         return buy_orders, sell_orders
 
     def create_order(self, order_type: str, currency_price: str, currency_quantity: str,
-                     unit_price: float = None, quantity: float = None,
+                     unit_price: Decimal = None, quantity: Decimal = None,
                      execution_type: str = BaseAPI.ORDER_LIMIT) -> dict:
         order = {}
         market = currency_price + '-' + currency_quantity
         if execution_type == self.ORDER_LIMIT:
             if order_type == self.ORDER_BUY:
-                order = self._client.buy_limit(market, quantity, unit_price)
+                order = self._client.buy_limit(market, float(quantity), float(unit_price))
             elif order_type == self.ORDER_SELL:
-                order = self._client.sell_limit(market, quantity, unit_price)
+                order = self._client.sell_limit(market, float(quantity), float(unit_price))
         return order
 
     def get_open_orders(self, currency_price: str = None, currency_quantity: str = None):

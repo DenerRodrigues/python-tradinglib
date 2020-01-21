@@ -10,11 +10,12 @@ class BaseAPI:
     ORDER_MARKET = 'MARKET'
 
     @staticmethod
-    def format_number(value, decimal_places=8) -> float:
+    def format_number(value, decimal_places=8) -> Decimal:
         exp = Decimal(str('{0:.%sf}' % decimal_places).format(0))
-        return float(Decimal(value).quantize(exp, rounding=ROUND_DOWN))
+        return Decimal(str(value)).quantize(exp, rounding=ROUND_DOWN)
 
-    def calc_order(self, unit_price: float, quantity: float = None, total: float = None) -> (float, float, float):
+    def calc_order(self, unit_price: Decimal,
+                   quantity: Decimal = None, total: Decimal = None) -> (Decimal, Decimal, Decimal):
         if quantity:
             total = Decimal(str(unit_price)) * Decimal(str(quantity))
         else:
@@ -46,7 +47,7 @@ class BaseAPI:
 
     def build_orderbook(self, unit_price, quantity, total=None):
         if not total:
-            total = self.format_number(Decimal(str(unit_price)) * Decimal(str(quantity)))
+            total = Decimal(str(unit_price)) * Decimal(str(quantity))
         return {
             'unit_price': self.format_number(unit_price),
             'quantity': self.format_number(quantity),
@@ -59,14 +60,14 @@ class BaseAPI:
     def get_balance(self, currency: str = None):
         raise NotImplementedError
 
-    def create_withdraw(self, currency: str, quantity: float, address: str, tag: str = None) -> dict:
+    def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
         raise NotImplementedError
 
     def list_orderbook(self, currency_price: str, currency_quantity: str, limit: int = 10):
         raise NotImplementedError
 
     def create_order(self, order_type: str, currency_price: str, currency_quantity: str,
-                     unit_price: float = None, quantity: float = None,
+                     unit_price: Decimal = None, quantity: Decimal = None,
                      execution_type: str = ORDER_LIMIT) -> dict:
         raise NotImplementedError
 
