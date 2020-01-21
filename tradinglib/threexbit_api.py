@@ -29,7 +29,7 @@ class ThreeXBitAPI(BaseAPI):
             )
         balances = [
             self.build_balance(
-                currency=currency.get('currency', {}).get('code'),
+                currency=balance.get('currency', {}).get('code'),
                 available=balance.get('available_balance'),
                 locked=balance.get('blocked_balance'),
                 total=balance.get('total_balance')
