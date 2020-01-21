@@ -10,50 +10,47 @@ class BaseAPI:
     ORDER_MARKET = 'MARKET'
 
     @staticmethod
-    def format_decimal(value: Decimal, decimal_places: int = 8) -> Decimal:
+    def format_number(value, decimal_places=8) -> float:
         exp = Decimal(str('{0:.%sf}' % decimal_places).format(0))
-        return value.quantize(exp, rounding=ROUND_DOWN)
+        return float(Decimal(value).quantize(exp, rounding=ROUND_DOWN))
 
-    def calc_order(self, unit_price: Decimal, quantity: Decimal = None,
-                   total: Decimal = None) -> (Decimal, Decimal, Decimal):
+    def calc_order(self, unit_price: float, quantity: float = None, total: float = None) -> (float, float, float):
         if quantity:
             total = Decimal(str(unit_price)) * Decimal(str(quantity))
         else:
             quantity = Decimal(str(total)) / Decimal(str(unit_price))
-        unit_price = self.format_decimal(unit_price)
-        quantity = self.format_decimal(quantity)
-        total = self.format_decimal(total)
+        unit_price = self.format_number(unit_price)
+        quantity = self.format_number(quantity)
+        total = self.format_number(total)
         return unit_price, quantity, total
 
-    @staticmethod
-    def build_balance(currency, available, locked, total=None):
+    def build_balance(self, currency, available, locked, total=None):
         if not total:
             total = Decimal(str(available)) + Decimal(str(locked))
         return {
             'currency': currency,
-            'available': Decimal(str(available)),
-            'locked': Decimal(str(locked)),
-            'total': Decimal(str(total)),
+            'available': self.format_number(available),
+            'locked': self.format_number(locked),
+            'total': self.format_number(total),
         }
 
-    @staticmethod
-    def build_ticker(last_price, high_price, low_price, bid_price, ask_price, variation):
+    def build_ticker(self, last_price, high_price, low_price, bid_price, ask_price, variation):
         return {
-            'last': Decimal(str(last_price)),
-            'high': Decimal(str(high_price)),
-            'low': Decimal(str(low_price)),
-            'bid': Decimal(str(bid_price)),
-            'ask': Decimal(str(ask_price)),
-            'variation': Decimal(str(variation)),
+            'last': self.format_number(last_price),
+            'high': self.format_number(high_price),
+            'low': self.format_number(low_price),
+            'bid': self.format_number(bid_price),
+            'ask': self.format_number(ask_price),
+            'variation': self.format_number(variation),
         }
 
     def build_orderbook(self, unit_price, quantity, total=None):
         if not total:
-            total = self.format_decimal(Decimal(str(unit_price)) * Decimal(str(quantity)))
+            total = self.format_number(Decimal(str(unit_price)) * Decimal(str(quantity)))
         return {
-            'unit_price': Decimal(str(unit_price)),
-            'quantity': Decimal(str(quantity)),
-            'total': Decimal(str(total)),
+            'unit_price': self.format_number(unit_price),
+            'quantity': self.format_number(quantity),
+            'total': self.format_number(total),
         }
 
     def get_ticker(self, currency_price: str, currency_quantity: str):
@@ -62,14 +59,14 @@ class BaseAPI:
     def get_balance(self, currency: str = None):
         raise NotImplementedError
 
-    def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
+    def create_withdraw(self, currency: str, quantity: float, address: str, tag: str = None) -> dict:
         raise NotImplementedError
 
     def list_orderbook(self, currency_price: str, currency_quantity: str, limit: int = 10):
         raise NotImplementedError
 
     def create_order(self, order_type: str, currency_price: str, currency_quantity: str,
-                     unit_price: Decimal = None, quantity: Decimal = None,
+                     unit_price: float = None, quantity: float = None,
                      execution_type: str = ORDER_LIMIT) -> dict:
         raise NotImplementedError
 

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from decimal import Decimal
-
 from bittrex.bittrex import API_V1_1, PROTECTION_PRV, Bittrex as Client
 
 from .base_api import BaseAPI
@@ -35,7 +33,7 @@ class BittrexAPI(BaseAPI):
         ]
         return balances
 
-    def create_withdraw(self, currency: str, quantity: Decimal, address: str, tag: str = None) -> dict:
+    def create_withdraw(self, currency: str, quantity: float, address: str, tag: str = None) -> dict:
         options = {
             'currency': currency,
             'quantity': quantity,
@@ -72,7 +70,7 @@ class BittrexAPI(BaseAPI):
         return buy_orders, sell_orders
 
     def create_order(self, order_type: str, currency_price: str, currency_quantity: str,
-                     unit_price: Decimal = None, quantity: Decimal = None,
+                     unit_price: float = None, quantity: float = None,
                      execution_type: str = BaseAPI.ORDER_LIMIT) -> dict:
         order = {}
         market = currency_price + '-' + currency_quantity
