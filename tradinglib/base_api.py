@@ -35,8 +35,9 @@ class BaseAPI:
             'total': self.format_number(total),
         }
 
-    def build_ticker(self, last_price, high_price, low_price, bid_price, ask_price, variation):
+    def build_ticker(self, currency_price, currency_quantity, last_price, high_price, low_price, bid_price, ask_price, variation):
         return {
+            'market': '{}-{}'.format(currency_price, currency_quantity),
             'last': self.format_number(last_price),
             'high': self.format_number(high_price),
             'low': self.format_number(low_price),

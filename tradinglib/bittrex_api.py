@@ -51,6 +51,8 @@ class BittrexAPI(BaseAPI):
         market = currency_price + '-' + currency_quantity
         ticker = self._client.get_market_summary(market).get('result')[0]
         return self.build_ticker(
+            currency_price,
+            currency_quantity,
             ticker.get('Last'),
             ticker.get('High'),
             ticker.get('Low'),

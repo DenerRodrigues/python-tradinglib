@@ -46,6 +46,8 @@ class ThreeXBitAPI(BaseAPI):
         ticker = self._public.ticker()
         ticker = ticker.get(market)
         return self.build_ticker(
+            currency_price,
+            currency_quantity,
             ticker.get('last'),
             ticker.get('max'),
             ticker.get('min'),

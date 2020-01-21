@@ -51,6 +51,8 @@ class BinanceAPI(BaseAPI):
         symbol = currency_quantity + currency_price
         ticker = self._client.get_ticker(symbol=symbol)
         return self.build_ticker(
+            currency_price,
+            currency_quantity,
             ticker.get('lastPrice'),
             ticker.get('highPrice'),
             ticker.get('lowPrice'),
