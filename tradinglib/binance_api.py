@@ -61,6 +61,13 @@ class BinanceAPI(BaseAPI):
             ticker.get('priceChangePercent'),
         )
 
+    def get_markets(self):
+        markets = [
+            '%s-%s' % (market.get('baseAsset'), market.get('quoteAsset'))
+            for market in self._client.get_exchange_info().get('symbols')
+        ]
+        return markets
+
     def list_orderbook(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC', limit: int = 10):
         symbol = currency_quantity + currency_price
         book = self._client.get_order_book(symbol=symbol)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from _pydecimal import Decimal
+
+from decimal import Decimal
 
 from txb_api.client import Client
 from txb_api.public import Public
@@ -55,6 +56,10 @@ class ThreeXBitAPI(BaseAPI):
             ticker.get('ask'),
             ticker.get('variation'),
         )
+
+    def get_markets(self):
+        markets = ['%s-%s' % (market.split('_')[1], market.split('_')[0]) for market in self._public.ticker().keys()]
+        return markets
 
     def list_orderbook(self, currency_price: str = 'CREDIT', currency_quantity: str = 'BTC', limit: int = 10):
         book = self._public.orderbook(currency_price, currency_quantity)

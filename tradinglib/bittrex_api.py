@@ -61,6 +61,10 @@ class BittrexAPI(BaseAPI):
             0,
         )
 
+    def get_markets(self):
+        markets = [market.get('MarketName') for market in self._client.get_markets().get('result')]
+        return markets
+
     def list_orderbook(self, currency_price: str = 'USDT', currency_quantity: str = 'BTC', limit: int = 10):
         market = currency_price + '-' + currency_quantity
         book = self._client.get_orderbook(market=market).get('result')
