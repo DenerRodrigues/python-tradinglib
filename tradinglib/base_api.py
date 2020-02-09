@@ -37,7 +37,7 @@ class BaseAPI:
 
     def build_ticker(self, currency_price, currency_quantity, last_price, high_price, low_price, bid_price, ask_price, variation):
         return {
-            'market': '{}-{}'.format(currency_price, currency_quantity),
+            'market': '{}-{}'.format(currency_quantity, currency_price),
             'last': self.format_number(last_price),
             'high': self.format_number(high_price),
             'low': self.format_number(low_price),
@@ -53,6 +53,19 @@ class BaseAPI:
             'unit_price': self.format_number(unit_price),
             'quantity': self.format_number(quantity),
             'total': self.format_number(total),
+        }
+
+    def build_order(self, order_id, order_type, currency_price, currency_quantity,
+                    unit_price, quantity, executed, status, time):
+        return {
+            'order_id': order_id,
+            'order_type': order_type,
+            'market': '{}-{}'.format(currency_quantity, currency_price),
+            'unit_price': self.format_number(unit_price),
+            'quantity': self.format_number(quantity),
+            'executed': self.format_number(executed),
+            'status': status,
+            'time': time,
         }
 
     def get_ticker(self, currency_price: str, currency_quantity: str):

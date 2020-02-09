@@ -98,12 +98,40 @@ class BittrexAPI(BaseAPI):
         else:
             market = None
         payload = self._client.get_open_orders(market)
-        return payload.get('result')
+        orders = [
+            self.build_order(
+                order.get('orderId'),
+                order.get('side'),
+                currency_price,
+                currency_quantity,
+                order.get('price'),
+                order.get('origQty'),
+                order.get('executedQty'),
+                order.get('status'),
+                order.get('updateTime'),
+            )
+            for order in payload.get('result')
+        ]
+        return orders
 
     def get_order_history(self, currency_price: str, currency_quantity: str):
         market = currency_price + '-' + currency_quantity
         payload = self._client.get_order_history(market)
-        return payload.get('result')
+        orders = [
+            self.build_order(
+                order.get('OrderUuid'),
+                order.get('OrderType'),
+                currency_price,
+                currency_quantity,
+                order.get('Price'),
+                order.get('Quantity'),
+                order.get('QuantityRemaining'),
+                'DONE' if order.get('Closed') else 'PENDING',
+                order.get('Closed') or order.get('Opened'),
+            )
+            for order in payload.get('result')
+        ]
+        return orders
 
     def get_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
         payload = self._client.get_order(order_id)

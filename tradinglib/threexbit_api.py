@@ -91,7 +91,22 @@ class ThreeXBitAPI(BaseAPI):
             currency_quantity,
             self._client.ORDER_PENDING
         )
-        return buy_orders, sell_orders
+        orders = buy_orders + sell_orders
+        orders = [
+            self.build_order(
+                order.get('order_id'),
+                order.get('order_type'),
+                currency_price,
+                currency_quantity,
+                order.get('unit_price'),
+                order.get('quantity'),
+                order.get('executed_qty'),
+                order.get('status'),
+                order.get('last_update'),
+            )
+            for order in orders
+        ]
+        return orders
 
     def get_order_history(self, currency_price: str, currency_quantity: str):
         buy_orders = self._client.list_orders(self._client.ORDER_BUY, currency_price, currency_quantity)

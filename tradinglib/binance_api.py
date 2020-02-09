@@ -106,7 +106,20 @@ class BinanceAPI(BaseAPI):
         if currency_price and currency_quantity:
             symbol = currency_quantity + currency_price
             params['symbol'] = symbol
-        orders = self._client.get_open_orders(**params)
+        orders = [
+            self.build_order(
+                order.get('orderId'),
+                order.get('side'),
+                currency_price,
+                currency_quantity,
+                order.get('price'),
+                order.get('origQty'),
+                order.get('executedQty'),
+                order.get('status'),
+                order.get('updateTime'),
+            )
+            for order in self._client.get_open_orders(**params)
+        ]
         return orders
 
     def get_order_history(self, currency_price: str, currency_quantity: str):
@@ -115,7 +128,20 @@ class BinanceAPI(BaseAPI):
             'symbol': symbol,
             'recvWindow': self.recv_window,
         }
-        orders = self._client.get_all_orders(**params)
+        orders = [
+            self.build_order(
+                order.get('orderId'),
+                order.get('side'),
+                currency_price,
+                currency_quantity,
+                order.get('price'),
+                order.get('origQty'),
+                order.get('executedQty'),
+                order.get('status'),
+                order.get('updateTime'),
+            )
+            for order in self._client.get_all_orders(**params)
+        ]
         return orders
 
     def get_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
