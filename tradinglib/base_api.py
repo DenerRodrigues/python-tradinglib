@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 from decimal import Decimal, ROUND_DOWN
 
 
@@ -65,7 +66,7 @@ class BaseAPI:
             'quantity': self.format_number(quantity),
             'executed': self.format_number(executed),
             'status': status,
-            'time': time,
+            'time': datetime.fromtimestamp(int(str(time)[:10])),
         }
 
     def get_ticker(self, currency_price: str, currency_quantity: str):
