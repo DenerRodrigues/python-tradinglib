@@ -69,13 +69,24 @@ class ThreeXBitAPI(BaseAPI):
 
     def create_order(self, order_type: str, currency_price: str, currency_quantity: str, unit_price: Decimal = None,
                      quantity: Decimal = None, execution_type: str = BaseAPI.ORDER_LIMIT) -> dict:
-        return self._client.create_order(
+        order = self._client.create_order(
             order_type=order_type,
             currency_price=currency_price,
             currency_quantity=currency_quantity,
             unit_price=unit_price,
             quantity=quantity,
             execution_type=execution_type,
+        )
+        return self.build_order(
+            order.get('order_id'),
+            order.get('order_type'),
+            currency_price,
+            currency_quantity,
+            order.get('unit_price'),
+            order.get('quantity'),
+            order.get('executed_qty'),
+            order.get('status'),
+            order.get('last_update'),
         )
 
     def get_open_orders(self, currency_price: str = None, currency_quantity: str = None):
@@ -111,7 +122,33 @@ class ThreeXBitAPI(BaseAPI):
     def get_order_history(self, currency_price: str, currency_quantity: str):
         buy_orders = self._client.list_orders(self._client.ORDER_BUY, currency_price, currency_quantity)
         sell_orders = self._client.list_orders(self._client.ORDER_SELL, currency_price, currency_quantity)
-        return buy_orders, sell_orders
+        orders = buy_orders + sell_orders
+        orders = [
+            self.build_order(
+                order.get('order_id'),
+                order.get('order_type'),
+                currency_price,
+                currency_quantity,
+                order.get('unit_price'),
+                order.get('quantity'),
+                order.get('executed_qty'),
+                order.get('status'),
+                order.get('last_update'),
+            )
+            for order in orders
+        ]
+        return orders
 
     def get_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
-        return self._client.get_order(order_id)
+        order = self._client.get_order(order_id)
+        return self.build_order(
+            order.get('order_id'),
+            order.get('order_type'),
+            currency_price,
+            currency_quantity,
+            order.get('unit_price'),
+            order.get('quantity'),
+            order.get('executed_qty'),
+            order.get('status'),
+            order.get('last_update'),
+        )

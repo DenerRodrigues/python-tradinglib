@@ -90,7 +90,17 @@ class BittrexAPI(BaseAPI):
                 order = self._client.buy_limit(market, float(quantity), float(unit_price))
             elif order_type == self.ORDER_SELL:
                 order = self._client.sell_limit(market, float(quantity), float(unit_price))
-        return order
+        return self.build_order(
+            order.get('orderId'),
+            order.get('side'),
+            currency_price,
+            currency_quantity,
+            order.get('price'),
+            order.get('origQty'),
+            order.get('executedQty'),
+            order.get('status'),
+            order.get('updateTime'),
+        )
 
     def get_open_orders(self, currency_price: str = None, currency_quantity: str = None):
         if currency_price and currency_quantity:
@@ -135,4 +145,15 @@ class BittrexAPI(BaseAPI):
 
     def get_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
         payload = self._client.get_order(order_id)
-        return payload.get('result')
+        order = payload.get('result')
+        return self.build_order(
+            order.get('orderId'),
+            order.get('side'),
+            currency_price,
+            currency_quantity,
+            order.get('price'),
+            order.get('origQty'),
+            order.get('executedQty'),
+            order.get('status'),
+            order.get('updateTime'),
+        )

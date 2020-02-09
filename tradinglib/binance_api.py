@@ -97,7 +97,17 @@ class BinanceAPI(BaseAPI):
             elif order_type == self.ORDER_SELL:
                 params['quantity'] = quantity
                 order = self._client.order_limit_sell(**params)
-        return order
+        return self.build_order(
+            order.get('orderId'),
+            order.get('side'),
+            currency_price,
+            currency_quantity,
+            order.get('price'),
+            order.get('origQty'),
+            order.get('executedQty'),
+            order.get('status'),
+            order.get('updateTime'),
+        )
 
     def get_open_orders(self, currency_price: str = None, currency_quantity: str = None):
         params = {
@@ -152,4 +162,14 @@ class BinanceAPI(BaseAPI):
             'recvWindow': self.recv_window,
         }
         order = self._client.get_order(**params)
-        return order
+        self.build_order(
+            order.get('orderId'),
+            order.get('side'),
+            currency_price,
+            currency_quantity,
+            order.get('price'),
+            order.get('origQty'),
+            order.get('executedQty'),
+            order.get('status'),
+            order.get('updateTime'),
+        )
