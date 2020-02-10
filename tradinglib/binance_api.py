@@ -173,3 +173,12 @@ class BinanceAPI(BaseAPI):
             order.get('status'),
             order.get('updateTime'),
         )
+
+    def cancel_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
+        symbol = currency_quantity + currency_price
+        params = {
+            'symbol': symbol,
+            'orderId': order_id,
+            'recvWindow': self.recv_window,
+        }
+        return self._client.cancel_order(**params)

@@ -94,3 +94,6 @@ class BaseAPI:
 
     def get_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
         raise NotImplementedError
+
+    def cancel_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
+        raise NotImplementedError

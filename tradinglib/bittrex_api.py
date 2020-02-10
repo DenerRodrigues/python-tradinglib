@@ -157,3 +157,6 @@ class BittrexAPI(BaseAPI):
             order.get('status'),
             order.get('updateTime'),
         )
+
+    def cancel_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
+        return self._client.cancel(order_id)

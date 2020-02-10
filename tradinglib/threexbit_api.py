@@ -152,3 +152,6 @@ class ThreeXBitAPI(BaseAPI):
             order.get('status'),
             order.get('last_update'),
         )
+
+    def cancel_order(self, order_id: str, currency_price: str = None, currency_quantity: str = None):
+        return self._client.cancel_order(order_id)
