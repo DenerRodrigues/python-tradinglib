@@ -58,6 +58,8 @@ class BaseAPI:
 
     def build_order(self, order_id, order_type, currency_price, currency_quantity,
                     unit_price, quantity, executed, status, time):
+
+        time = datetime.fromtimestamp(int(str(time)[:10])) if time else None
         return {
             'order_id': order_id,
             'order_type': order_type,
@@ -66,7 +68,7 @@ class BaseAPI:
             'quantity': self.format_number(quantity),
             'executed': self.format_number(executed),
             'status': status,
-            'time': datetime.fromtimestamp(int(str(time)[:10])),
+            'time': time,
         }
 
     def get_ticker(self, currency_price: str, currency_quantity: str):

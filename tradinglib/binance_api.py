@@ -106,7 +106,7 @@ class BinanceAPI(BaseAPI):
             order.get('origQty'),
             order.get('executedQty'),
             order.get('status'),
-            order.get('updateTime'),
+            order.get('transactTime'),
         )
 
     def get_open_orders(self, currency_price: str = None, currency_quantity: str = None):
